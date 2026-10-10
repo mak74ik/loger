@@ -23,8 +23,8 @@ DIM = "\033[2m"
 R = "\033[0m"              # Reset
 
 BBS_BANNER = f"""{DARK}+-----------------------------------------------------------------------------------------------+{R}
-{G}{BOLD}|  1073 // L-O-G-E // SERVER SERVICE DARKNET BBS ARCHIVE & RECEPTOR PROTOCOL LOG MONITOR                                   |{R}
-{DARK}|  PORT 1073 (L-O-G-E) // HOMELAB NODE                                 |{R}
+{G}{BOLD}|  1073 // LOGER // SERVER PROCESS & LOG MONITOR                                                |{R}
+{DARK}|  PORT: 1073 (L-O-G-E) // HOMELAB NODE                                                         |{R}
 {DARK}+-----------------------------------------------------------------------------------------------+{R}"""
 
 def get_terminal_status_text(manager: LogerManager) -> str:
@@ -61,7 +61,7 @@ def get_terminal_status_text(manager: LogerManager) -> str:
         )
 
     lines.append(f"{DARK}+-----------+----------------------------+--------+------------+---------+------------------------------+{R}")
-    lines.append(f"{DIM}Darknet Web Board: {WHITE}http://127.0.0.1:1073{R}  |  {DIM}Type {WHITE}loger help{R}{DIM} for protocol manual.{R}\n")
+    lines.append(f"{DIM}Darknet Web Board: {WHITE}http://100.111.188.56:1073{R}  |  {DIM}Type {WHITE}loger help{R}{DIM} for protocol manual.{R}\n")
     return "\n".join(lines)
 
 def print_help():
@@ -88,7 +88,7 @@ def print_help():
 
 {BOLD}PORT IDENTIFIER:{R}
     Port {AMBER}1073{R} corresponds to leet-cipher {WHITE}l-1, o-0, g-7, e-3{R}.
-    Direct cURL query: {G}curl http://127.0.0.1:1073{R}
+    Direct cURL query: {G}curl http://100.111.188.56:1073{R}
 """)
 
 def stream_logs(manager: LogerManager, service_id: str = None):
