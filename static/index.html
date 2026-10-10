@@ -3,112 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1073 // LOGER DARKNET BBS // /b/ - HOMELAB MONITOR</title>
+  <title>loger (1073)</title>
   <link rel="stylesheet" href="/style.css">
 </head>
-<body class="crt-theme">
-  <div class="scanlines"></div>
-
+<body>
   <div class="bbs-wrapper">
-    <!-- Board Banner -->
     <header class="bbs-header">
       <div class="ascii-title">
 <pre>
- 1073 // L-O-G-E // DARKNET BBS ARCHIVE & RECEPTOR PROTOCOL
+ loger : 1073
  ==============================================================================
- [NODE: archlinux] [IP: 127.0.0.1:1073] [AUTH: ANONYMOUS] [SYS: NOMINAL]
+ [host: archlinux] [port: 1073] [status: active]
 </pre>
       </div>
 
       <nav class="board-nav">
-        <span>[ <a href="#board">/b/ - All Programs</a> ]</span>
-        <span>[ <a href="#wire">/live/ - Log Wire</a> ]</span>
-        <span>[ <a href="#post-box">/new/ - Register Target</a> ]</span>
-        <span>[ <a href="/?format=ansi" target="_blank">/ansi/ - Raw Curl Mode</a> ]</span>
+        <span>[ <a href="#board">/programs/</a> ]</span>
+        <span>[ <a href="#wire">/logs/</a> ]</span>
+        <span>[ <a href="#post-box">/add/</a> ]</span>
+        <span>[ <a href="/?format=ansi" target="_blank">/curl/</a> ]</span>
         <span class="nav-right">
-          <button class="bbs-btn" id="crt-toggle">[CRT: ON]</button>
-          <button class="bbs-btn btn-danger" id="reset-all-btn">[Reset State]</button>
+          <button class="bbs-btn btn-danger" id="reset-all-btn">[Сбросить список]</button>
         </span>
       </nav>
     </header>
 
-    <!-- Sticky Announcement: Node Telemetry -->
+    <!-- Node Status -->
     <section class="pinned-thread">
       <div class="post-header">
-        <span class="pinned-badge">📌 [PINNED]</span>
-        <span class="post-author">Anonymous (Admin)</span>
-        <span class="post-date" id="pinned-date">10/10/26(Sat)10:45:00</span>
-        <span class="post-no">No. 1073000</span>
+        <span class="pinned-badge">● Статус сервера</span>
+        <span class="post-date" id="pinned-date">--</span>
       </div>
       <div class="pinned-body">
-        <p class="greentext">>be me, homelab arch server homelab-server</p>
-        <p class="greentext">>running 24/7 on Tailscale mesh (127.0.0.1)</p>
-        <p class="greentext">>port 1073 leet-bound to l-o-g-e</p>
         <div class="telemetry-bar">
           <span>[CPU Load: <b id="stat-load" class="text-amber">--</b>]</span>
-          <span>[RAM Usage: <b id="stat-ram" class="text-green">--%</b>]</span>
-          <span>[Active Programs: <b id="stat-total" class="text-green">--</b>]</span>
-          <span>[Uptime: <b id="stat-uptime">15d 10h</b>]</span>
-          <span>[Status: <b class="text-green blink">ONLINE</b>]</span>
+          <span>[RAM: <b id="stat-ram" class="text-green">--%</b>]</span>
+          <span>[Программ: <b id="stat-total" class="text-green">--</b>]</span>
+          <span>[Аптайм: <b id="stat-uptime">--</b>]</span>
+          <span>[Порт: <b>1073</b>]</span>
         </div>
       </div>
     </section>
 
-    <!-- 4chan Style Reply / Post Target Form -->
+    <!-- Add Program Form -->
     <section class="post-box" id="post-box">
-      <div class="box-title">[ Post New Target / Register Endpoint ]</div>
+      <div class="box-title">[ Добавить программу / адрес ]</div>
       <form id="new-service-form" class="bbs-form">
         <div class="form-row">
-          <label>Program Name:</label>
-          <input type="text" id="in-name" placeholder="e.g. CyberBridge Node" required class="bbs-input">
+          <label>Название:</label>
+          <input type="text" id="in-name" placeholder="например: My Bot" required class="bbs-input">
         </div>
         <div class="form-row">
-          <label>Target Address:</label>
+          <label>Адрес / URL:</label>
           <input type="text" id="in-addr" placeholder="http://127.0.0.1:4040" required class="bbs-input">
         </div>
         <div class="form-row">
-          <label>Port (optional):</label>
+          <label>Порт:</label>
           <input type="number" id="in-port" placeholder="4040" class="bbs-input short">
-          <label class="ml-10">Category:</label>
-          <input type="text" id="in-cat" placeholder="User Daemon" class="bbs-input short">
+          <label class="ml-10">Категория:</label>
+          <input type="text" id="in-cat" placeholder="Сервис" class="bbs-input short">
         </div>
         <div class="form-row">
-          <label>Description:</label>
-          <input type="text" id="in-desc" placeholder="What this program does..." class="bbs-input">
+          <label>Описание:</label>
+          <input type="text" id="in-desc" placeholder="Заметки или описание..." class="bbs-input">
         </div>
         <div class="form-submit-row">
-          <button type="submit" class="bbs-btn submit-btn">[ Submit Program >> ]</button>
-          <span class="form-hint">Tip: CLI command: <code>loger add &lt;name&gt; &lt;address&gt;</code></span>
+          <button type="submit" class="bbs-btn submit-btn">[ Сохранить ]</button>
         </div>
       </form>
     </section>
 
-    <!-- Main Board: Threads / Services (Left) & Live Log Wire (Right) -->
+    <!-- Main Board -->
     <main class="board-columns">
-      <!-- Left: Service Threads -->
+      <!-- Left: Programs -->
       <section class="threads-column" id="board">
         <div class="column-header">
-          <h3>/b/ - Active Program Threads (<span id="threads-count">0</span>)</h3>
+          <h3>Программы и службы (<span id="threads-count">0</span>)</h3>
           <div class="filter-links">
-            <span class="filter-item active" data-filter="all">[All]</span>
-            <span class="filter-item" data-filter="healthy">[Online]</span>
-            <span class="filter-item" data-filter="custom">[Custom]</span>
+            <span class="filter-item active" data-filter="all">[Все]</span>
+            <span class="filter-item" data-filter="healthy">[Онлайн]</span>
+            <span class="filter-item" data-filter="custom">[Добавленные]</span>
           </div>
         </div>
 
         <div class="threads-list" id="threads-container">
-          <!-- Populated dynamically as 4chan posts -->
+          <!-- Populated dynamically -->
         </div>
       </section>
 
-      <!-- Right: Raw Terminal Log Wire -->
+      <!-- Right: Logs Wire -->
       <section class="wire-column" id="wire">
         <div class="column-header">
-          <h3>/live/ - Terminal Wire Stream</h3>
+          <h3>Логи</h3>
           <div class="wire-controls">
-            <input type="text" id="wire-search" placeholder="grep keyword..." class="bbs-input mini">
-            <button class="bbs-btn mini" id="toggle-scroll">[Scroll: ON]</button>
-            <button class="bbs-btn mini" id="clear-wire">[Clear]</button>
+            <input type="text" id="wire-search" placeholder="поиск по логам..." class="bbs-input mini">
+            <button class="bbs-btn mini" id="toggle-scroll">[Автопрокрутка: ВКЛ]</button>
+            <button class="bbs-btn mini" id="clear-wire">[Очистить]</button>
           </div>
         </div>
 
@@ -117,30 +107,14 @@
         </div>
 
         <div class="wire-status-bar">
-          <span class="text-green">● SSE FEED CONNECTED (/api/stream)</span>
+          <span class="text-green">● Поток логов активен</span>
           <span id="wire-tick" class="text-muted">tick: --</span>
         </div>
       </section>
     </main>
 
-    <!-- Footer Manpage Reference -->
     <footer class="bbs-footer">
-      <div class="man-box">
-<pre>
-+---------------------------------------------------------------------------------+
-| SSH TERMINAL COMMANDS (Run directly on server):                                 |
-|   loger status     - View BBS table in shell                                    |
-|   loger logs [id]  - Live stream logs                                           |
-|   loger new        - Interactive add wizard                                     |
-|   loger stop       - Halt daemon                                                |
-|   loger restart    - Restart daemon                                             |
-|   loger reset      - Reset configuration                                        |
-|   loger help       - Protocol manual                                            |
-|   curl http://127.0.0.1:1073 - Direct ANSI output in any terminal         |
-+---------------------------------------------------------------------------------+
-</pre>
-      </div>
-      <p class="copyright">1073 // LOGER PROTOCOL // OPEN SOURCE // <a href="https://github.com/mak74ik/loger" target="_blank">github.com/mak74ik/loger</a></p>
+      <p class="copyright">loger (1073)</p>
     </footer>
   </div>
 

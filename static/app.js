@@ -1,5 +1,5 @@
 /**
- * 1073 // LOGER DARKNET BBS FRONTEND JAVASCRIPT
+ * loger (1073) Web Interface
  */
 
 let allServices = [];
@@ -7,24 +7,15 @@ let autoScroll = true;
 let currentFilter = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initBBS();
+  initUI();
   loadData();
   connectSSE();
 });
 
-function initBBS() {
-  // 1. CRT Scanlines Toggle
-  const crtBtn = document.getElementById('crt-toggle');
-  const scanlines = document.querySelector('.scanlines');
-  crtBtn.addEventListener('click', () => {
-    scanlines.classList.toggle('disabled');
-    const isOn = !scanlines.classList.contains('disabled');
-    crtBtn.textContent = `[CRT: ${isOn ? 'ON' : 'OFF'}]`;
-  });
-
-  // 2. Reset Button
+function initUI() {
+  // Reset Button
   document.getElementById('reset-all-btn').addEventListener('click', async () => {
-    if (!confirm('Reset all custom endpoints and flush darknet buffer to factory defaults?')) return;
+    if (!confirm('Сбросить добавленные адреса к дефолтным?')) return;
     try {
       const res = await fetch('/api/reset', { method: 'POST' });
       if (res.ok) {
@@ -35,14 +26,14 @@ function initBBS() {
     }
   });
 
-  // 3. Post New Target Form
+  // Add Form
   document.getElementById('new-service-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const payload = {
       name: document.getElementById('in-name').value.trim(),
       address: document.getElementById('in-addr').value.trim(),
       port: document.getElementById('in-port').value.trim() || null,
-      category: document.getElementById('in-cat').value.trim() || 'User Daemon',
+      category: document.getElementById('in-cat').value.trim() || 'Сервис',
       description: document.getElementById('in-desc').value.trim()
     };
     try {
@@ -55,14 +46,14 @@ function initBBS() {
         document.getElementById('new-service-form').reset();
         await fetchServices();
       } else {
-        alert('[x] Failed to register endpoint');
+        alert('Ошибка при сохранении адреса');
       }
     } catch (err) {
       console.error(err);
     }
   });
 
-  // 4. Board Filter Tabs
+  // Filter Tabs
   document.querySelectorAll('.filter-item').forEach(item => {
     item.addEventListener('click', () => {
       document.querySelectorAll('.filter-item').forEach(i => i.classList.remove('active'));
@@ -72,11 +63,11 @@ function initBBS() {
     });
   });
 
-  // 5. Wire Controls
+  // Wire Controls
   const scrollBtn = document.getElementById('toggle-scroll');
   scrollBtn.addEventListener('click', () => {
     autoScroll = !autoScroll;
-    scrollBtn.textContent = `[Scroll: ${autoScroll ? 'ON' : 'OFF'}]`;
+    scrollBtn.textContent = `[Автопрокрутка: ${autoScroll ? 'ВКЛ' : 'ВЫКЛ'}]`;
     scrollBtn.style.color = autoScroll ? 'var(--green-matrix)' : 'var(--text-muted)';
   });
 
@@ -102,9 +93,10 @@ async function fetchStats() {
     const res = await fetch('/api/stats');
     if (!res.ok) return;
     const data = await res.json();
-    document.getElementById('stat-load').textContent = data.cpu_load || '0.24';
+    document.getElementById('stat-load').textContent = data.cpu_load || '0.20';
     document.getElementById('stat-ram').textContent = `${data.mem_pct}`;
-    document.getElementById('stat-uptime').textContent = data.uptime || '15d 10h';
+    document.getElementById('stat-uptime').textContent = data.uptime || '--';
+    document.getElementById('pinned-date').textContent = data.timestamp || '';
   } catch (err) {
     console.error(err);
   }
@@ -139,25 +131,26 @@ function renderThreads() {
     const thread = document.createElement('div');
     thread.className = 'thread-post';
 
-    const pNo = s.post_no || 1073000;
+    const pNo = s.post_no || 1073;
     const stBadge = `badge-${s.status || 'offline'}`;
-    const openLink = s.port ? `<a href="http://${window.location.hostname}:${s.port}" target="_blank" class="action-link">[>>Open Port :${s.port}]</a>` : '';
-    const delLink = s.type === 'custom' ? `<button class="action-delete" onclick="deleteService('${s.id}')">[>>Delete Target]</button>` : '';
+    const host = window.location.hostname || '127.0.0.1';
+    const openLink = s.port ? `<a href="http://${host}:${s.port}" target="_blank" class="action-link">[Открыть :${s.port}]</a>` : '';
+    const delLink = s.type === 'custom' ? `<button class="action-delete" onclick="deleteService('${s.id}')">[Удалить]</button>` : '';
 
     thread.innerHTML = `
       <div class="thread-header">
         <span class="thread-title">${escapeHtml(s.name)}</span>
-        <span class="thread-postno">No. ${pNo}</span>
+        <span class="thread-postno">#${pNo}</span>
         <span class="thread-badge ${stBadge}">${s.status.toUpperCase()}</span>
       </div>
       <div class="thread-body">
-        <p class="greentext">>target: ${escapeHtml(s.address)}</p>
-        <p class="greentext">>type: ${s.type} | category: ${escapeHtml(s.category)} | ping: ${s.latency_ms || 0.1}ms</p>
-        <p class="greentext">>daemon: ${escapeHtml(s.description || 'Active background process')}</p>
+        <p class="greentext">>адрес: ${escapeHtml(s.address)}</p>
+        <p class="greentext">>тип: ${s.type} | пинг: ${s.latency_ms || 0.1}ms</p>
+        <p class="greentext">>инфо: ${escapeHtml(s.description || 'Работает')}</p>
       </div>
       <div class="thread-actions">
         ${openLink}
-        <a href="#wire" class="action-link" onclick="filterWire('${escapeJs(s.name)}')">[>>Filter Logs]</a>
+        <a href="#wire" class="action-link" onclick="filterWire('${escapeJs(s.name)}')">[Логи]</a>
         ${delLink}
       </div>
     `;
@@ -173,7 +166,7 @@ function filterWire(name) {
 }
 
 async function deleteService(id) {
-  if (!confirm(`Delete endpoint ${id}?`)) return;
+  if (!confirm(`Удалить ${id}?`)) return;
   try {
     const res = await fetch(`/api/services/${id}`, { method: 'DELETE' });
     if (res.ok) {
@@ -205,7 +198,7 @@ function appendWireLine(log) {
 
   const lvlClass = `lvl-${log.level || 'INFO'}`;
   const ts = log.timestamp ? log.timestamp.split(' ')[1] : '00:00:00';
-  const pNo = log.post_no ? `>>${log.post_no}` : '>>1073';
+  const pNo = log.post_no ? `#${log.post_no}` : '';
 
   line.innerHTML = `
     <span class="wire-postno">${pNo}</span>
@@ -217,7 +210,6 @@ function appendWireLine(log) {
 
   container.appendChild(line);
 
-  // Buffer cap 250 elements
   if (container.children.length > 250) {
     container.removeChild(container.children[0]);
   }
@@ -246,7 +238,6 @@ function connectSSE() {
       }
     };
   } catch (e) {
-    console.warn('SSE fallback to polling');
     setInterval(fetchStats, 3000);
     setInterval(fetchLogs, 3000);
   }
