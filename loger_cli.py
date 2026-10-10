@@ -23,8 +23,8 @@ DIM = "\033[2m"
 R = "\033[0m"              # Reset
 
 BBS_BANNER = f"""{DARK}+-----------------------------------------------------------------------------------------------+{R}
-{G}{BOLD}|  1073 // L-O-G-E // DARKNET BBS ARCHIVE & RECEPTOR PROTOCOL                                   |{R}
-{DARK}|  ANONYMOUS NODE MONITOR // TAILSCALE MESH 127.0.0.1:1073                                 |{R}
+{G}{BOLD}|  1073 // L-O-G-E // SERVER SERVICE DARKNET BBS ARCHIVE & RECEPTOR PROTOCOL LOG MONITOR                                   |{R}
+{DARK}|  PORT 1073 (L-O-G-E) // HOMELAB NODE                                 |{R}
 {DARK}+-----------------------------------------------------------------------------------------------+{R}"""
 
 def get_terminal_status_text(manager: LogerManager) -> str:
